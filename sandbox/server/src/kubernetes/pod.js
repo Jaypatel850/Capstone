@@ -1,14 +1,17 @@
 import { k8sApi } from './config.js'
 
 async function createPod (sandboxId) {
+  if (!k8sApi) {
+    throw new Error('Kubernetes API not initialized. Container must run inside a Kubernetes cluster.');
+  }
 
   const podManifest = {
     metadata: {
       name: `sandbox-pod-${sandboxId}`,
       labels: {
         app: 'sandbox',
-        sandboxId: sandboxId
-      }
+        sandboxId: sandboxId,
+      },
     },
     spec: {
       volumes: [
@@ -31,7 +34,7 @@ async function createPod (sandboxId) {
       }],
       containers: [
         {
-          image: 'client',
+          image: 'template:latest',
           imagePullPolicy: 'IfNotPresent',
           name: 'sandbox-container',
           ports: [

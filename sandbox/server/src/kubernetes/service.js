@@ -1,6 +1,10 @@
 import { k8sApi } from './config.js';
 
 export const createService = async (sandboxId) => {
+    if (!k8sApi) {
+        throw new Error('Kubernetes API not initialized. Container must run inside a Kubernetes cluster.');
+    }
+
     const serviceManifest = {
         metadata: {
             name: `sandbox-service-${sandboxId}`,

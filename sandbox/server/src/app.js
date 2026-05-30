@@ -20,6 +20,10 @@ app.get('/api/sandbox/health', (req, res) => {
 app.post('/api/sandbox/start', async (req, res) => {
     const sandboxId = uuid();
     try {
+        if (!createPod || !createService) {
+            throw new Error('Kubernetes client not available. Run this container inside a Kubernetes cluster.');
+        }
+        
         await Promise.all([
             createPod(sandboxId),
             createService(sandboxId),
@@ -32,8 +36,12 @@ app.post('/api/sandbox/start', async (req, res) => {
         });
     } catch (err) {
         console.error('Failed to create sandbox:', err);
-        return res.status(500).json({ error: 'Failed to create sandbox' });
+        return res.status(500).json({ 
+            error: 'Failed to create sandbox',
+            details: err.message
+        });
     }
 });
-app.use((err, req, res, next) => {});
+
+
 export default app;

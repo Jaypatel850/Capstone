@@ -5,4 +5,4 @@ RUN npm install
 COPY . .
 RUN mkdir /workspace
 EXPOSE 3000
-CMD ["npm", "run", "start"]
+CMD ["npm", "run", "dev"]
